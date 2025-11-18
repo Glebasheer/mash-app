@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌱 Производство</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #F8FDF8;
+            color: #2E7D32;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .date-display {
+            color: #81C784;
+            font-size: 16px;
+        }
+
+        .nav {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            background: #C8E6C9;
+            border: none;
+            padding: 15px 12px;
+            border-radius: 15px;
+            color: #2E7D32;
+            font-size: 14px;
+            cursor: pointer;
+            flex: 1;
+            min-width: 110px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-btn.active {
+            background: #81C784;
+            color: white;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(46, 125, 50, 0.1);
+            border: 2px solid #E8F5E9;
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .btn {
+            background: #81C784;
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 12px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px 0;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #4CAF50;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 15px 0;
+            box-shadow: 0 2px 10px rgba(46, 125, 50, 0.1);
+            border: 2px solid #E8F5E9;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .card-title {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-soaking { background: #E3F2FD; color: #1976D2; }
+        .status-sprouting { background: #E8F5E9; color: #2E7D32; }
+        .status-peeling { background: #FFF3E0; color: #EF6C00; }
+        .status-blanching { background: #FCE4EC; color: #C2185B; }
+        .status-packing { background: #F3E5F5; color: #7B1FA2; }
+        .status-ready { background: #C8E6C9; color: #1B5E20; }
+        .status-paid { background: #C8E6C9; color: #1B5E20; }
+        .status-unpaid { background: #FFEBEE; color: #C62828; }
+        .status-delivered { background: #E8F5E9; color: #2E7D32; }
+        .status-pending { background: #FFF3E0; color: #EF6C00; }
+
+        .card-details {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn-small {
+            padding: 8px 12px;
+            font-size: 12px;
+            width: auto;
+        }
+
+        .btn-secondary {
+            background: #E8F5E9;
+            color: #2E7D32;
+            border: 2px solid #C8E6C9;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #E8F5E9;
+            border-radius: 10px;
+            font-size: 16px;
+            background: #F8FDF8;
+        }
+
+        .search-input {
+            margin-bottom: 15px;
+            padding: 12px;
+            border: 2px solid #E8F5E9;
+            border-radius: 10px;
+            font-size: 16px;
+            width: 100%;
+            background: #F8FDF8;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #81C784;
+        }
+
+        .finance-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .finance-card {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            border: 2px solid #E8F5E9;
+        }
+
+        .finance-amount {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2E7D32;
+            margin-bottom: 5px;
+        }
+
+        .finance-period {
+            font-size: 12px;
+            color: #666;
+        }
+
+        @media (max-width: 480px) {
+            .nav {
+                flex-direction: column;
+            }
+            .stats-grid, .finance-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🌱 Маш Булочки</h1>
+        <div class="date-display" id="currentDate"></div>
+    </div>
+
+    <nav class="nav">
+        <button class="nav-btn active" data-section="dashboard">📊 Главная</button>
+        <button class="nav-btn" data-section="batches">📦 Партии</button>
+        <button class="nav-btn" data-section="orders">📋 Заказы</button>
+        <button class="nav-btn" data-section="sales">💰 Продажи</button>
+        <button class="nav-btn" data-section="clients">👥 Клиенты</button>
+    </nav>
+
+    <!-- Дашборд -->
+    <section id="dashboard" class="section active">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" id="totalBatches">0</div>
+                <div class="stat-label">Всего партий</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalProfit">0₽</div>
+                <div class="stat-label">Общая прибыль</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="activeBatches">0</div>
+                <div class="stat-label">Активные</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalClients">0</div>
+                <div class="stat-label">Клиенты</div>
+            </div>
+        </div>
+
+        <div class="finance-stats">
+            <div class="finance-card">
+                <div class="finance-amount" id="weekProfit">0₽</div>
+                <div class="finance-period">За неделю</div>
+            </div>
+            <div class="finance-card">
+                <div class="finance-amount" id="monthProfit">0₽</div>
+                <div class="finance-period">За месяц</div>
+            </div>
+            <div class="finance-card">
+                <div class="finance-amount" id="yearProfit">0₽</div>
+                <div class="finance-period">За год</div>
+            </div>
+        </div>
+
+        <h3>🔄 Активные партии</h3>
+        <div id="activeBatchesList"></div>
+
+        <h3>💰 Последние продажи</h3>
+        <div id="recentSalesList"></div>
+    </section>
+
+    <!-- Партии -->
+    <section id="batches" class="section">
+        <button class="btn" onclick="showModal('newBatchModal')">🎯 Добавить партию</button>
+        <div id="batchesList"></div>
+    </section>
+
+    <!-- Заказы -->
+    <section id="orders" class="section">
+        <button class="btn" onclick="showModal('newOrderModal')">📋 Создать заказ</button>
+        <div id="ordersList"></div>
+    </section>
+
+    <!-- Продажи -->
+    <section id="sales" class="section">
+        <button class="btn" onclick="showModal('newSaleModal')">💰 Записать продажу</button>
+        <div id="salesList"></div>
+    </section>
+
+    <!-- Клиенты -->
+    <section id="clients" class="section">
+        <button class="btn" onclick="showModal('newClientModal')">👥 Добавить клиента</button>
+        <input type="text" class="search-input" id="clientSearch" placeholder="🔍 Поиск клиента по имени..." onkeyup="filterClients()">
+        <div id="clientsList"></div>
+    </section>
+
+    <!-- Модальные окна -->
+    <div id="newBatchModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">🎯 Новая партия</h3>
+                <button class="close-btn" onclick="hideModal('newBatchModal')">×</button>
+            </div>
+            <form id="newBatchForm">
+                <div class="form-group">
+                    <label>Номер партии:</label>
+                    <input type="text" id="batchNumber" placeholder="Партия #1" required>
+                </div>
+                <div class="form-group">
+                    <label>Дата начала:</label>
+                    <input type="date" id="batchDate" required>
+                </div>
+                <div class="form-group">
+                    <label>Время начала:</label>
+                    <input type="time" id="batchTime" required>
+                </div>
+                <div class="form-group">
+                    <label>Вес сухого маша (г):</label>
+                    <input type="number" id="batchWeight" placeholder="500" required>
+                </div>
+                <div class="form-group">
+                    <label>Статус:</label>
+                    <select id="batchStatus">
+                        <option value="Замачивание">Замачивание</option>
+                        <option value="Проращивание">Проращивание</option>
+                        <option value="Шелушение">Шелушение</option>
+                        <option value="Бланширование">Бланширование</option>
+                        <option value="Сушка">Сушка</option>
+                        <option value="Фасовка">Фасовка</option>
+                        <option value="Готово к отправке">Готово к отправке</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Заметки:</label>
+                    <textarea id="batchNotes" placeholder="Особенности партии..."></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="hideModal('newBatchModal')">Отмена</button>
+                    <button type="submit" class="btn">Создать партию</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="newOrderModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">📋 Новый заказ</h3>
+                <button class="close-btn" onclick="hideModal('newOrderModal')">×</button>
+            </div>
+            <form id="newOrderForm">
+                <div class="form-group">
+                    <label>Клиент:</label>
+                    <input type="text" id="orderClientSearch" placeholder="🔍 Начните вводить имя клиента..." onkeyup="filterOrderClientSelect()">
+                    <select id="orderClient" required style="margin-top: 10px;">
+                        <option value="">Выберите клиента</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Дата заказа:</label>
+                    <input type="date" id="orderDate" required>
+                </div>
+                <div class="form-group">
+                    <label>Вес маша (г):</label>
+                    <input type="number" id="orderWeight" placeholder="150" required>
+                </div>
+                <div class="form-group">
+                    <label>Планируемая цена (руб):</label>
+                    <input type="number" id="orderPlannedPrice" placeholder="400" required>
+                </div>
+                <div class="form-group">
+                    <label>Фактическая цена (руб):</label>
+                    <input type="number" id="orderActualPrice" placeholder="600" required>
+                </div>
+                <div class="form-group">
+                    <label>Статус оплаты:</label>
+                    <select id="orderPaymentStatus">
+                        <option value="Не оплачен">Не оплачен</option>
+                        <option value="Оплачен">Оплачен</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Статус выдачи:</label>
+                    <select id="orderDeliveryStatus">
+                        <option value="Не выдан">Не выдан</option>
+                        <option value="Выдан">Выдан</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Заметки:</label>
+                    <textarea id="orderNotes" placeholder="Особенности заказа..."></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="hideModal('newOrderModal')">Отмена</button>
+                    <button type="submit" class="btn">Создать заказ</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="newSaleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">💰 Новая продажа</h3>
+                <button class="close-btn" onclick="hideModal('newSaleModal')">×</button>
+            </div>
+            <form id="newSaleForm">
+                <div class="form-group">
+                    <label>Партия:</label>
+                    <select id="saleBatch" required>
+                        <option value="">Выберите партию</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Клиент:</label>
+                    <input type="text" id="clientSearchSelect" placeholder="🔍 Начните вводить имя клиента..." onkeyup="filterClientSelect()">
+                    <select id="saleClient" required style="margin-top: 10px;">
+                        <option value="">Выберите клиента</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Дата продажи:</label>
+                    <input type="date" id="saleDate" required>
+                </div>
+                <div class="form-group">
+                    <label>Вес проданного маша (г):</label>
+                    <input type="number" id="saleWeight" placeholder="150" required>
+                </div>
+                <div class="form-group">
+                    <label>Планируемая цена (руб):</label>
+                    <input type="number" id="plannedPrice" placeholder="400" required>
+                </div>
+                <div class="form-group">
+                    <label>Фактическая цена (руб):</label>
+                    <input type="number" id="actualPrice" placeholder="600" required>
+                </div>
+                <div class="form-group">
+                    <label>Статус оплаты:</label>
+                    <select id="salePaymentStatus">
+                        <option value="Не оплачен">Не оплачен</option>
+                        <option value="Оплачен">Оплачен</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Заметки:</label>
+                    <textarea id="saleNotes" placeholder="Особенности продажи..."></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="hideModal('newSaleModal')">Отмена</button>
+                    <button type="submit" class="btn">Записать продажу</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="newClientModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">👥 Новый клиент</h3>
+                <button class="close-btn" onclick="hideModal('newClientModal')">×</button>
+            </div>
+            <form id="newClientForm">
+                <div class="form-group">
+                    <label>Имя клиента:</label>
+                    <input type="text" id="clientName" placeholder="Кафе Утро" required>
+                </div>
+                <div class="form-group">
+                    <label>Место:</label>
+                    <input type="text" id="clientPlace" placeholder="ул. Пушкина, 10">
+                </div>
+                <div class="form-group">
+                    <label>Контакт:</label>
+                    <input type="text" id="clientContact" placeholder="+7 999 123-45-67">
+                </div>
+                <div class="form-group">
+                    <label>Заметки:</label>
+                    <textarea id="clientNotes" placeholder="Предпочтения клиента..."></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="hideModal('newClientModal')">Отмена</button>
+                    <button type="submit" class="btn">Добавить клиента</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="editBatchModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">✏️ Редактировать партию</h3>
+                <button class="close-btn" onclick="hideModal('editBatchModal')">×</button>
+            </div>
+            <form id="editBatchForm">
+                <input type="hidden" id="editBatchId">
+                <div class="form-group">
+                    <label>Номер партии:</label>
+                    <input type="text" id="editBatchNumber" required>
+                </div>
+                <div class="form-group">
+                    <label>Дата начала:</label>
+                    <input type="date" id="editBatchDate" required>
+                </div>
+                <div class="form-group">
+                    <label>Время начала:</label>
+                    <input type="time" id="editBatchTime" required>
+                </div>
+                <div class="form-group">
+                    <label>Вес сухого маша (г):</label>
+                    <input type="number" id="editBatchWeight" required>
+                </div>
+                <div class="form-group">
+                    <label>Вес после сушки (г):</label>
+                    <input type="number" id="editBatchDryWeight" placeholder="Автоматически">
+                </div>
+                <div class="form-group">
+                    <label>Статус:</label>
+                    <select id="editBatchStatus">
+                        <option value="Замачивание">Замачивание</option>
+                        <option value="Проращивание">Проращивание</option>
+                        <option value="Шелушение">Шелушение</option>
+                        <option value="Бланширование">Бланширование</option>
+                        <option value="Сушка">Сушка</option>
+                        <option value="Фасовка">Фасовка</option>
+                        <option value="Готово к отправке">Готово к отправке</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Заметки:</label>
+                    <textarea id="editBatchNotes"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="deleteBatch()">Удалить</button>
+                    <button type="button" class="btn btn-secondary" onclick="hideModal('editBatchModal')">Отмена</button>
+                    <button type="submit" class="btn">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // База данных - ИСПРАВЛЕННАЯ ВЕРСИЯ (Local Storage)
+        const DB = {
+            save: function(key, data) {
+                localStorage.setItem(key, JSON.stringify(data));
+                console.log('✅ Данные сохранены:', key, data.length, 'записей');
+            },
+            load: function(key) {
+                const data = localStorage.getItem(key);
+                const result = data ? JSON.parse(data) : [];
+                console.log('📁 Данные загружены:', key, result.length, 'записей');
+                return result;
+            },
+            getNextId: function(key) {
+                const items = this.load(key);
+                return items.length > 0 ? Math.max(...items.map(item => item.id)) + 1 : 1;
+            }
+        };
+
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', function() {
+            initData();
+            updateCurrentDate();
+            setupEventListeners();
+            loadDashboard();
+            
+            // Установка сегодняшней даты по умолчанию
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('batchDate').value = today;
+            document.getElementById('saleDate').value = today;
+            document.getElementById('orderDate').value = today;
+            
+            console.log('🚀 Приложение загружено!');
+        });
+
+        function initData() {
+            // Проверяем и инициализируем каждую таблицу отдельно в Local Storage
+            if (!localStorage.getItem('batches')) {
+                localStorage.setItem('batches', JSON.stringify([]));
+            }
+            if (!localStorage.getItem('sales')) {
+                localStorage.setItem('sales', JSON.stringify([]));
+            }
+            if (!localStorage.getItem('clients')) {
+                localStorage.setItem('clients', JSON.stringify([]));
+            }
+            if (!localStorage.getItem('orders')) {
+                localStorage.setItem('orders', JSON.stringify([]));
+            }
+            console.log('💾 Local Storage инициализирован');
+        }
+
+        function setupEventListeners() {
+            // Навигация
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                    this.classList.add('active');
+                    const sectionId = this.getAttribute('data-section');
+                    document.getElementById(sectionId).classList.add('active');
+                    loadSectionData(sectionId);
+                });
+            });
+
+            // Формы
+            document.getElementById('newBatchForm').addEventListener('submit', addBatch);
+            document.getElementById('newOrderForm').addEventListener('submit', addOrder);
+            document.getElementById('newSaleForm').addEventListener('submit', addSale);
+            document.getElementById('newClientForm').addEventListener('submit', addClient);
+            document.getElementById('editBatchForm').addEventListener('submit', updateBatch);
+        }
+
+        function updateCurrentDate() {
+            const now = new Date();
+            const options = { day: 'numeric', month: 'long', year: 'numeric' };
+            document.getElementById('currentDate').textContent = now.toLocaleDateString('ru-RU', options);
+        }
+
+        function showModal(modalId) {
+            document.getElementById(modalId).style.display = 'block';
+            if (modalId === 'newSaleModal') {
+                fillBatchSelect();
+                fillClientSelect();
+            }
+            if (modalId === 'newOrderModal') {
+                fillOrderClientSelect();
+            }
+        }
+
+        function hideModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function loadSectionData(sectionName) {
+            switch(sectionName) {
+                case 'dashboard': loadDashboard(); break;
+                case 'batches': loadBatches(); break;
+                case 'orders': loadOrders(); break;
+                case 'sales': loadSales(); break;
+                case 'clients': loadClients(); break;
+            }
+        }
+
+        function loadDashboard() {
+            const batches = DB.load('batches');
+            const sales = DB.load('sales');
+            const clients = DB.load('clients');
+            const orders = DB.load('orders');
+            
+            document.getElementById('totalBatches').textContent = batches.length;
+            document.getElementById('totalClients').textContent = clients.length;
+            document.getElementById('activeBatches').textContent = batches.filter(b => b.status !== 'Готово к отправке').length;
+            
+            // Общая прибыль (только оплаченные продажи)
+            const totalProfit = sales
+                .filter(sale => sale.paymentStatus === 'Оплачен')
+                .reduce((sum, sale) => sum + sale.actualPrice, 0);
+            document.getElementById('totalProfit').textContent = totalProfit + '₽';
+            
+            // Прибыль за периоды (только оплаченные продажи)
+            calculatePeriodProfit(sales);
+            
+            // Активные партии
+            const activeBatchesList = document.getElementById('activeBatchesList');
+            const activeBatches = batches.filter(b => b.status !== 'Готово к отправке').slice(0, 3);
+            
+            if (activeBatches.length === 0) {
+                activeBatchesList.innerHTML = '<div class="empty-state">Нет активных партий</div>';
+            } else {
+                activeBatchesList.innerHTML = activeBatches.map(batch => `
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">${batch.batchNumber}</div>
+                            <div class="status status-${getStatusClass(batch.status)}">${batch.status}</div>
+                        </div>
+                        <div class="card-details">
+                            📦 ${batch.dryWeight}г сухого → ${batch.finalWeight || '?'}г после сушки<br>
+                            📅 ${batch.date} • 🕒 ${batch.time}
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            // Последние продажи - ПОСЛЕДНИЕ ПЕРВЫМИ
+            const recentSalesList = document.getElementById('recentSalesList');
+            const recentSales = sales.slice(-3).reverse();
+            
+            if (recentSales.length === 0) {
+                recentSalesList.innerHTML = '<div class="empty-state">Нет продаж</div>';
+            } else {
+                recentSalesList.innerHTML = recentSales.map(sale => `
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">${sale.clientName}</div>
+                            <div class="status status-${sale.paymentStatus === 'Оплачен' ? 'paid' : 'unpaid'}">${sale.paymentStatus}</div>
+                        </div>
+                        <div class="card-details">
+                            📦 ${sale.weight}г<br>
+                            💰 ${sale.actualPrice}₽ (план: ${sale.plannedPrice}₽) • 📅 ${sale.date}
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function calculatePeriodProfit(sales) {
+            const now = new Date();
+            const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+            const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+            const yearAgo = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000);
+            
+            const weekProfit = sales
+                .filter(sale => new Date(sale.date) >= weekAgo && sale.paymentStatus === 'Оплачен')
+                .reduce((sum, sale) => sum + sale.actualPrice, 0);
+                
+            const monthProfit = sales
+                .filter(sale => new Date(sale.date) >= monthAgo && sale.paymentStatus === 'Оплачен')
+                .reduce((sum, sale) => sum + sale.actualPrice, 0);
+                
+            const yearProfit = sales
+                .filter(sale => new Date(sale.date) >= yearAgo && sale.paymentStatus === 'Оплачен')
+                .reduce((sum, sale) => sum + sale.actualPrice, 0);
+            
+            document.getElementById('weekProfit').textContent = weekProfit + '₽';
+            document.getElementById('monthProfit').textContent = monthProfit + '₽';
+            document.getElementById('yearProfit').textContent = yearProfit + '₽';
+        }
+
+        function getStatusClass(status) {
+            const statusMap = {
+                'Замачивание': 'soaking',
+                'Проращивание': 'sprouting',
+                'Шелушение': 'peeling',
+                'Бланширование': 'blanching',
+                'Сушка': 'packing',
+                'Фасовка': 'packing',
+                'Готово к отправке': 'ready',
+                'Оплачен': 'paid',
+                'Не оплачен': 'unpaid',
+                'Выдан': 'delivered',
+                'Не выдан': 'pending'
+            };
+            return statusMap[status] || 'sprouting';
+        }
+
+        function loadBatches() {
+            const batches = DB.load('batches');
+            const batchesList = document.getElementById('batchesList');
+            
+            if (batches.length === 0) {
+                batchesList.innerHTML = '<div class="empty-state">Нет созданных партий</div>';
+                return;
+            }
+            
+            // Сортируем партии - новые первыми
+            const sortedBatches = batches.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            
+            batchesList.innerHTML = sortedBatches.map(batch => `
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">${batch.batchNumber}</div>
+                        <div class="status status-${getStatusClass(batch.status)}">${batch.status}</div>
+                    </div>
+                    <div class="card-details">
+                        📦 ${batch.dryWeight}г сухого → ${batch.finalWeight || '?'}г после сушки<br>
+                        📅 ${batch.date} • 🕒 ${batch.time}
+                    </div>
+                    ${batch.notes ? `<div class="card-details">📝 ${batch.notes}</div>` : ''}
+                    <div class="card-actions">
+                        <button class="btn btn-small btn-secondary" onclick="editBatch(${batch.id})">✏️ Редактировать</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function addBatch(e) {
+            e.preventDefault();
+            
+            const batch = {
+                id: DB.getNextId('batches'),
+                batchNumber: document.getElementById('batchNumber').value,
+                date: document.getElementById('batchDate').value,
+                time: document.getElementById('batchTime').value,
+                dryWeight: parseInt(document.getElementById('batchWeight').value),
+                finalWeight: null,
+                status: document.getElementById('batchStatus').value,
+                notes: document.getElementById('batchNotes').value,
+                createdAt: new Date().toISOString()
+            };
+            
+            const batches = DB.load('batches');
+            batches.push(batch);
+            DB.save('batches', batches);
+            
+            hideModal('newBatchModal');
+            document.getElementById('newBatchForm').reset();
+            loadDashboard();
+            loadBatches();
+            
+            alert('✅ Партия создана!');
+        }
+
+        function editBatch(id) {
+            const batches = DB.load('batches');
+            const batch = batches.find(b => b.id === id);
+            
+            if (batch) {
+                document.getElementById('editBatchId').value = batch.id;
+                document.getElementById('editBatchNumber').value = batch.batchNumber;
+                document.getElementById('editBatchDate').value = batch.date;
+                document.getElementById('editBatchTime').value = batch.time;
+                document.getElementById('editBatchWeight').value = batch.dryWeight;
+                document.getElementById('editBatchDryWeight').value = batch.finalWeight || '';
+                document.getElementById('editBatchStatus').value = batch.status;
+                document.getElementById('editBatchNotes').value = batch.notes || '';
+                
+                showModal('editBatchModal');
+            }
+        }
+
+        function updateBatch(e) {
+            e.preventDefault();
+            
+            const id = parseInt(document.getElementById('editBatchId').value);
+            const batches = DB.load('batches');
+            const batchIndex = batches.findIndex(b => b.id === id);
+            
+            if (batchIndex !== -1) {
+                batches[batchIndex].batchNumber = document.getElementById('editBatchNumber').value;
+                batches[batchIndex].date = document.getElementById('editBatchDate').value;
+                batches[batchIndex].time = document.getElementById('editBatchTime').value;
+                batches[batchIndex].dryWeight = parseInt(document.getElementById('editBatchWeight').value);
+                batches[batchIndex].finalWeight = document.getElementById('editBatchDryWeight').value ? 
+                    parseInt(document.getElementById('editBatchDryWeight').value) : null;
+                batches[batchIndex].status = document.getElementById('editBatchStatus').value;
+                batches[batchIndex].notes = document.getElementById('editBatchNotes').value;
+                
+                DB.save('batches', batches);
+                hideModal('editBatchModal');
+                loadDashboard();
+                loadBatches();
+                
+                alert('✅ Партия обновлена!');
+            }
+        }
+
+        function deleteBatch() {
+            if (!confirm('🗑️ Удалить эту партию?')) return;
+            
+            const id = parseInt(document.getElementById('editBatchId').value);
+            const batches = DB.load('batches');
+            const filteredBatches = batches.filter(b => b.id !== id);
+            
+            DB.save('batches', filteredBatches);
+            hideModal('editBatchModal');
+            loadDashboard();
+            loadBatches();
+            
+            alert('✅ Партия удалена!');
+        }
+
+        // Функции для заказов
+        function loadOrders() {
+            const orders = DB.load('orders');
+            const ordersList = document.getElementById('ordersList');
+            
+            if (orders.length === 0) {
+                ordersList.innerHTML = '<div class="empty-state">Нет созданных заказов</div>';
+                return;
+            }
+            
+            // Сортируем заказы - новые первыми
+            const sortedOrders = orders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            
+            ordersList.innerHTML = sortedOrders.map(order => `
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">${order.clientName}</div>
+                        <div>
+                            <span class="status status-${order.paymentStatus === 'Оплачен' ? 'paid' : 'unpaid'}">${order.paymentStatus}</span>
+                            <span class="status status-${order.deliveryStatus === 'Выдан' ? 'delivered' : 'pending'}" style="margin-left: 5px;">${order.deliveryStatus}</span>
+                        </div>
+                    </div>
+                    <div class="card-details">
+                        📦 Вес: ${order.weight}г<br>
+                        💰 Цена: ${order.actualPrice}₽ (план: ${order.plannedPrice}₽)<br>
+                        📅 Дата: ${order.date}
+                    </div>
+                    ${order.notes ? `<div class="card-details">📝 ${order.notes}</div>` : ''}
+                    <div class="card-actions">
+                        <button class="btn btn-small btn-secondary" onclick="toggleOrderPayment(${order.id})">
+                            ${order.paymentStatus === 'Оплачен' ? '❌ Отменить оплату' : '✅ Оплатить'}
+                        </button>
+                        <button class="btn btn-small btn-secondary" onclick="toggleOrderDelivery(${order.id})">
+                            ${order.deliveryStatus === 'Выдан' ? '❌ Отменить выдачу' : '📦 Выдать'}
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function addOrder(e) {
+            e.preventDefault();
+            
+            const clientId = parseInt(document.getElementById('orderClient').value);
+            const clients = DB.load('clients');
+            const client = clients.find(c => c.id === clientId);
+            
+            if (!client) {
+                alert('❌ Выберите клиента!');
+                return;
+            }
+            
+            const order = {
+                id: DB.getNextId('orders'),
+                clientId: clientId,
+                clientName: client.name,
+                date: document.getElementById('orderDate').value,
+                weight: parseInt(document.getElementById('orderWeight').value),
+                plannedPrice: parseInt(document.getElementById('orderPlannedPrice').value),
+                actualPrice: parseInt(document.getElementById('orderActualPrice').value),
+                paymentStatus: document.getElementById('orderPaymentStatus').value,
+                deliveryStatus: document.getElementById('orderDeliveryStatus').value,
+                notes: document.getElementById('orderNotes').value,
+                createdAt: new Date().toISOString()
+            };
+            
+            const orders = DB.load('orders');
+            orders.push(order);
+            DB.save('orders', orders);
+            
+            hideModal('newOrderModal');
+            document.getElementById('newOrderForm').reset();
+            loadDashboard();
+            loadOrders();
+            
+            alert('✅ Заказ создан!');
+        }
+
+        function toggleOrderPayment(orderId) {
+            const orders = DB.load('orders');
+            const orderIndex = orders.findIndex(o => o.id === orderId);
+            
+            if (orderIndex !== -1) {
+                orders[orderIndex].paymentStatus = orders[orderIndex].paymentStatus === 'Оплачен' ? 'Не оплачен' : 'Оплачен';
+                DB.save('orders', orders);
+                loadOrders();
+                loadDashboard();
+            }
+        }
+
+        function toggleOrderDelivery(orderId) {
+            const orders = DB.load('orders');
+            const orderIndex = orders.findIndex(o => o.id === orderId);
+            
+            if (orderIndex !== -1) {
+                orders[orderIndex].deliveryStatus = orders[orderIndex].deliveryStatus === 'Выдан' ? 'Не выдан' : 'Выдан';
+                DB.save('orders', orders);
+                loadOrders();
+            }
+        }
+
+        function fillOrderClientSelect() {
+            const clients = DB.load('clients');
+            const select = document.getElementById('orderClient');
+            select.innerHTML = '<option value="">Выберите клиента</option>' +
+                clients.map(client => `<option value="${client.id}">${client.name}</option>`).join('');
+        }
+
+        function filterOrderClientSelect() {
+            const searchTerm = document.getElementById('orderClientSearch').value.toLowerCase();
+            const clients = DB.load('clients');
+            const select = document.getElementById('orderClient');
+            
+            const filteredClients = clients.filter(client => 
+                client.name.toLowerCase().includes(searchTerm)
+            );
+            
+            select.innerHTML = '<option value="">Выберите клиента</option>' +
+                filteredClients.map(client => `<option value="${client.id}">${client.name}</option>`).join('');
+        }
+
+        function fillBatchSelect() {
+            const batches = DB.load('batches');
+            const select = document.getElementById('saleBatch');
+            select.innerHTML = '<option value="">Выберите партию</option>' +
+                batches.map(batch => `<option value="${batch.id}">${batch.batchNumber} (${batch.dryWeight}г)</option>`).join('');
+        }
+
+        function fillClientSelect() {
+            const clients = DB.load('clients');
+            const select = document.getElementById('saleClient');
+            select.innerHTML = '<option value="">Выберите клиента</option>' +
+                clients.map(client => `<option value="${client.id}">${client.name}</option>`).join('');
+        }
+
+        function filterClientSelect() {
+            const searchTerm = document.getElementById('clientSearchSelect').value.toLowerCase();
+            const clients = DB.load('clients');
+            const select = document.getElementById('saleClient');
+            
+            const filteredClients = clients.filter(client => 
+                client.name.toLowerCase().includes(searchTerm)
+            );
+            
+            select.innerHTML = '<option value="">Выберите клиента</option>' +
+                filteredClients.map(client => `<option value="${client.id}">${client.name}</option>`).join('');
+        }
+
+        function addSale(e) {
+            e.preventDefault();
+            
+            const batchId = parseInt(document.getElementById('saleBatch').value);
+            const clientId = parseInt(document.getElementById('saleClient').value);
+            
+            const batches = DB.load('batches');
+            const clients = DB.load('clients');
+            
+            const batch = batches.find(b => b.id === batchId);
+            const client = clients.find(c => c.id === clientId);
+            
+            if (!batch || !client) {
+                alert('❌ Выберите партию и клиента!');
+                return;
+            }
+            
+            const sale = {
+                id: DB.getNextId('sales'),
+                batchId: batchId,
+                batchNumber: batch.batchNumber,
+                clientId: clientId,
+                clientName: client.name,
+                date: document.getElementById('saleDate').value,
+                weight: parseInt(document.getElementById('saleWeight').value),
+                plannedPrice: parseInt(document.getElementById('plannedPrice').value),
+                actualPrice: parseInt(document.getElementById('actualPrice').value),
+                paymentStatus: document.getElementById('salePaymentStatus').value,
+                notes: document.getElementById('saleNotes').value,
+                createdAt: new Date().toISOString()
+            };
+            
+            const sales = DB.load('sales');
+            sales.push(sale);
+            DB.save('sales', sales);
+            
+            hideModal('newSaleModal');
+            document.getElementById('newSaleForm').reset();
+            loadDashboard();
+            loadSales();
+            
+            alert('✅ Продажа записана!');
+        }
+
+        function loadSales() {
+            const sales = DB.load('sales');
+            const salesList = document.getElementById('salesList');
+            
+            if (sales.length === 0) {
+                salesList.innerHTML = '<div class="empty-state">Нет записей о продажах</div>';
+                return;
+            }
+            
+            // Сортируем продажи - новые первыми
+            const sortedSales = sales.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            
+            salesList.innerHTML = sortedSales.map(sale => `
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">${sale.clientName}</div>
+                        <div class="status status-${sale.paymentStatus === 'Оплачен' ? 'paid' : 'unpaid'}">${sale.paymentStatus}</div>
+                    </div>
+                    <div class="card-details">
+                        📦 ${sale.weight}г<br>
+                        💰 ${sale.actualPrice}₽ (план: ${sale.plannedPrice}₽)<br>
+                        📦 Партия: ${sale.batchNumber} • 📅 ${sale.date}
+                    </div>
+                    ${sale.notes ? `<div class="card-details">📝 ${sale.notes}</div>` : ''}
+                    <div class="card-actions">
+                        <button class="btn btn-small btn-secondary" onclick="toggleSalePayment(${sale.id})">
+                            ${sale.paymentStatus === 'Оплачен' ? '❌ Отменить оплату' : '✅ Оплатить'}
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function toggleSalePayment(saleId) {
+            const sales = DB.load('sales');
+            const saleIndex = sales.findIndex(s => s.id === saleId);
+            
+            if (saleIndex !== -1) {
+                sales[saleIndex].paymentStatus = sales[saleIndex].paymentStatus === 'Оплачен' ? 'Не оплачен' : 'Оплачен';
+                DB.save('sales', sales);
+                loadSales();
+                loadDashboard();
+            }
+        }
+
+        function addClient(e) {
+            e.preventDefault();
+            
+            const client = {
+                id: DB.getNextId('clients'),
+                name: document.getElementById('clientName').value,
+                place: document.getElementById('clientPlace').value,
+                contact: document.getElementById('clientContact').value,
+                notes: document.getElementById('clientNotes').value,
+                createdAt: new Date().toISOString()
+            };
+            
+            const clients = DB.load('clients');
+            clients.push(client);
+            DB.save('clients', clients);
+            
+            hideModal('newClientModal');
+            document.getElementById('newClientForm').reset();
+            loadDashboard();
+            loadClients();
+            
+            alert('✅ Клиент добавлен!');
+        }
+
+        function filterClients() {
+            const searchTerm = document.getElementById('clientSearch').value.toLowerCase();
+            loadClients(searchTerm);
+        }
+
+        function loadClients(searchTerm = '') {
+            const clients = DB.load('clients');
+            const clientsList = document.getElementById('clientsList');
+            
+            let filteredClients = clients;
+            if (searchTerm) {
+                filteredClients = clients.filter(client => 
+                    client.name.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            // Сортируем клиентов - новые первыми
+            const sortedClients = filteredClients.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            
+            if (sortedClients.length === 0) {
+                clientsList.innerHTML = '<div class="empty-state">' + 
+                    (searchTerm ? 'Клиенты не найдены' : 'Нет добавленных клиентов') + 
+                    '</div>';
+                return;
+            }
+            
+            clientsList.innerHTML = sortedClients.map(client => `
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">${client.name}</div>
+                    </div>
+                    <div class="card-details">
+                        ${client.place ? `📍 ${client.place}<br>` : ''}
+                        ${client.contact ? `📞 ${client.contact}<br>` : ''}
+                        📅 Добавлен: ${new Date(client.createdAt).toLocaleDateString('ru-RU')}
+                    </div>
+                    ${client.notes ? `<div class="card-details">📝 ${client.notes}</div>` : ''}
+                </div>
+            `).join('');
+        }
+    </script>
+</body>
+</html>
